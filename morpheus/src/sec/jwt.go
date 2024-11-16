@@ -32,8 +32,6 @@ func (authenticator *JwtAuthenticator) JwtToUser(token string) (*dto.User, error
         return nil, err
     }
 
-    // parsed.Valid is responsible for the token being expired, wrongly signed
-    // or signed by an untrusted party
     if claims, ok := parsed.Claims.(jwt.MapClaims); ok && parsed.Valid {
         if _, subjectExists := claims["sub"]; !subjectExists {
             return nil, errors.New("couldn't parse jwt, no subject")
@@ -71,8 +69,6 @@ func userFromClaims(claims jwt.MapClaims) (*dto.User, error) {
     return dto.NewUser(userId, *rolesArr, *permissionsArr), nil
 }
 
-// Gets interface{} and returns pointer to a strings array 
-// if given object can be represented as such, returns error otherwise
 func toStringsArray(obj interface{}) (*[]string, error) {
     var elementsStringsSlice []string
     if elements, ok := obj.([]interface{}); ok {

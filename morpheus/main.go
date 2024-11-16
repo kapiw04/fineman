@@ -117,9 +117,7 @@ func loadJwtAuthenticator() (*sec.JwtAuthenticator, error) {
     return sec.NewJwtAuthenticator(publicKey)
 }
 
-// newGrpcServer returns an mTls secured grpc server
-// mTls config given in environment variables
-func newGrpcServer() (*grpc.Server, error) {
+func NewGrpcServer() (*grpc.Server, error) {
     if strings.TrimSpace(getEnvOrDefault(NO_MTLS_ENV, "0")) == "1" {
         return grpc.NewServer(), nil
     }
@@ -133,7 +131,7 @@ func newGrpcServer() (*grpc.Server, error) {
 }
 
 func main() {
-    fmt.Print(GREETING_HEADER);
+    fmt.Printf(GREETING_HEADER);
 
     port := getEnvOrDefault(PORT_ENV, "8080")
 	lis, err := net.Listen("tcp", ":" + port)
@@ -146,7 +144,7 @@ func main() {
 		log.Fatalf("Failed to create jwt authenticator: %v", err)
     }
 
-    server, err := newGrpcServer()
+    server, err := NewGrpcServer()
     if err != nil {
 		log.Fatalf("Failed to create grpc server: %v", err)
     }
