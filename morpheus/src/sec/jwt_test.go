@@ -131,20 +131,6 @@ func getPrivateSecret() *rsa.PrivateKey {
     return rsaPrivateKey
 }
 
-func signingMethodOf(signingMethod int) jwt.SigningMethod {
-    switch signingMethod {
-    case NOT_SIGNED:
-        return jwt.SigningMethodNone
-    case SIGNED_RSA_WRONG_KEY:
-    case SIGNED:
-        return jwt.SigningMethodRS512
-    case SIGNED_NO_RSA:
-        return jwt.SigningMethodHS512
-    }
-    os.Exit(1)
-    return nil
-}
-
 func createJwtAuthenticator() *JwtAuthenticator {
     token, err := os.ReadFile("./../testdata/crypto/jwt_secret.pub.pem")
     if err != nil {
