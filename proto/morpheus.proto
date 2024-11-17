@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package morpheus;
+
+option go_package = "src/protogen";
+
+message PredictProductNamesRequest {
+    string receipt = 1;
+    string token = 2;
+}
+
+message PredictedProductNames {
+    repeated string predictedName = 1;
+}
+
+message PredictProductNamesResponse {
+    repeated PredictedProductNames predictedProductNamesList = 1;
+}
+
+service Morpheus {
+    rpc PredictProductNames (PredictProductNamesRequest) returns (PredictProductNamesResponse) {}
+}
