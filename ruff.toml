@@ -1,4 +1,1 @@
-[lint.per-file-ignores]
-"API/morpheus" = ["ALL"]
-[lint]
-exclude = ["API/morpheus"]
+exclude = ["API/morpheus/morpheus*"]
