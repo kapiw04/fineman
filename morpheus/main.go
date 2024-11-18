@@ -133,7 +133,7 @@ func newGrpcServer() (*grpc.Server, error) {
 }
 
 func main() {
-    fmt.Printf(GREETING_HEADER);
+    fmt.Print(GREETING_HEADER);
 
     port := getEnvOrDefault(PORT_ENV, "8080")
 	lis, err := net.Listen("tcp", ":" + port)

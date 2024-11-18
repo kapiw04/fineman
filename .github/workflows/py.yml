@@ -1,7 +1,9 @@
-name: Lint
+name: Python CI
 
 on:
   push:
+    paths:
+      - 'API/**'
     branches:
       - main
   pull_request:
@@ -23,6 +25,6 @@ jobs:
 
         - name: install dependencies
           run: pip install -r requirements.txt
-        
+
         - name: code linting
           run: ruff check
