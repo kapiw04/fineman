@@ -17,4 +17,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
+// keep up to date with the github action go version
 go 1.23.1
