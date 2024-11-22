@@ -33,7 +33,7 @@ jobs:
           run: python3 -m mypy .
 
     tests: 
-        name: Linting
+        name: Tests
         runs-on: ubuntu-latest
 
         steps:
