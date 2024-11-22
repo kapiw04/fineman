@@ -1,6 +1,6 @@
-from .impulse import EvaluatedImpulse, ConstantImpulse, Datapoint, DatapointSeries, TimeSeriesImpulse
+from .impulse import BaseImpulse, ConstantImpulse, Datapoint, DatapointSeries, TimeSeriesImpulse
 __all__ = [
-    'EvaluatedImpulse',
+    'BaseImpulse',
     'ConstantImpulse',
     'Datapoint',
     'DatapointSeries',

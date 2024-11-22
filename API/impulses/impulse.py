@@ -1,13 +1,14 @@
 from __future__ import annotations
-import abc
 from dataclasses import dataclass
-from typing import Callable, Final, Iterable, Tuple, List
+from typing import Final, List, Tuple
+
 
 @dataclass
 class Datapoint:
     """
     Structure which stores a single value in a timepoint
     """
+
     unix_time: int
     value: float
 
@@ -34,15 +35,19 @@ class Datapoint:
 
     def __str__(self):
         return f"Datapoint({self.unix_time}, {self.value})"
-    
+
     def __repr__(self):
         return str(self)
 
-class DatapointSeries(Iterable[Datapoint]):
+
+class DatapointSeries:
     """
     A class to represent a series of Datapoint objects.
     """
-    def __init__(self, series: Iterable[Datapoint]):
+
+    def __init__(self, series: List[Datapoint]):
+        if not (isinstance(series, List) and all(isinstance(datapoint, Datapoint) for datapoint in series)):
+            raise TypeError("series must be an iterable of Datapoint objects")
         self.series = series
 
     def time_at(self, idx: int) -> int:
@@ -50,58 +55,85 @@ class DatapointSeries(Iterable[Datapoint]):
         Get the unix time at a specific index.
         """
         return self.series[idx].unix_time
-    
+
     def value_at(self, idx: int) -> float:
         """
         Get the value at a specific index.
         """
         return self.series[idx].value
- 
+
+    def __len__(self) -> int:
+        return len(self.series)
+
+    def __getitem__(self, idx: int) -> Datapoint:
+        return self.series[idx]
+
+    def __iter__(self):
+        return iter(self.series)
+
+    def __str__(self):
+        return f"DatapointSeries({self.series})"
+
+    def __repr__(self):
+        return str(self)
+
+
 @dataclass
-# Maybe we should just name it 'Impulse'
-class EvaluatedImpulse(abc.ABC):
+class BaseImpulse(DatapointSeries):
     """
     Abstract class for an impulse.
     """
-    value: float
+    def __init__(self, series: List[Datapoint]):
+        super().__init__(series)
 
-    @classmethod
-    def with_value_from_series(cls, series: DatapointSeries, operator: Callable[[List[float]], float]) -> float:
-        """
-        Computes a value from a series of datapoints using a specified operator.
-
-        Args:
-            series (DatapointSeries): A series of datapoints from which values are extracted.
-            operator (Callable[[List[float]], float]): A function that takes a list of floats and returns a single float.
+    def sum(self) -> BaseImpulse:
+        """Get the BaseImpulse object containing the cumulative sum of the impulse.
 
         Returns:
-            float: The result of applying the operator to the list of datapoint values.
-
-        Example:
-            >>> series = DatapointSeries([Datapoint(1, 1.0), Datapoint(2, 2.0), Datapoint(3, 3.0)])
-            >>> EvaluatedImpulse.with_value_from_series(series, sum)
+            BaseImpulse: The cumulative sum of the impulse.
         """
-        return cls(operator([datapoint.value for datapoint in series.series]))
+        current_sum = 0.0
+        sum_impulse: BaseImpulse = BaseImpulse([])
 
-class ConstantImpulse(EvaluatedImpulse):
+        for datapoint in self.series:
+            current_sum += datapoint.value
+            sum_impulse.series.append(Datapoint(datapoint.unix_time, current_sum))
+
+        return sum_impulse
+
+    def count(self) -> BaseImpulse:
+        """
+        Get a BaseImpulse object containing the count of the impulse.
+
+        Returns:
+            BaseImpulse: The count of the impulse.
+        """
+        unix_times = [datapoint.unix_time for datapoint in self.series]
+        values = range(1, len(self.series)+1)
+        return BaseImpulse(
+            [Datapoint(unix_time, float(value)) for unix_time, value in zip(unix_times, values)]
+        )
+
+class ConstantImpulse(BaseImpulse):
     """
     A class representing a constant impulse.
     """
+
     def __init__(self, value: float):
         self.value: Final[float] = value
 
-class TimeSeriesImpulse(EvaluatedImpulse):
+class TimeSeriesImpulse(BaseImpulse):
     """
     A class representing a time series impulse.
     """
+
     def __init__(self, series: DatapointSeries, time_start: int, time_end: int):
-        self.series = series
         self.time_start = time_start
         self.time_end = time_end
-    
+
     def get_mean(self) -> float:
         return self.get_sum() / len(self.series)
-    
+
     def get_sum(self) -> float:
         return sum([datapoint.value for datapoint in self.series])
 
