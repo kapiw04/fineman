@@ -22,7 +22,7 @@ class Category(models.Model):
 
 class ProductGroup(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    account = models.ManyToManyField(Account)
+    accounts = models.ManyToManyField(Account)
 
 class Product(models.Model):
     name = models.CharField(max_length=64)
