@@ -1,22 +1,43 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package morpheus;
 
 option go_package = "src/protogen";
 
+message PredictedName {
+    string name = 1;
+    uint64 productGroup = 2;
+}
+
 message PredictProductNamesRequest {
-    string receipt = 1;
-    string token = 2;
+    string token = 1;
+    repeated string products = 2;
+    repeated uint64 productGroups = 3;
 }
 
 message PredictedProductNames {
-    repeated string predictedName = 1;
+    repeated PredictedName predictedName = 1;
+    string nameOnReceipt = 2;
 }
 
 message PredictProductNamesResponse {
     repeated PredictedProductNames predictedProductNamesList = 1;
 }
 
+message DeleteProductGroupsRequest {
+    repeated uint64 productGroups = 1;
+}
+
+message SendFeedbackRequest {
+    string token = 1;
+    repeated PredictedProductNames goodPredictions = 2;
+    repeated PredictedProductNames badPredictions = 3;
+}
+
 service Morpheus {
     rpc PredictProductNames (PredictProductNamesRequest) returns (PredictProductNamesResponse) {}
+    rpc SendFeedback (SendFeedbackRequest) returns (google.protobuf.Empty) {}
+    rpc DeleteProductGroups (DeleteProductGroupsRequest) returns (google.protobuf.Empty) {}
 }
