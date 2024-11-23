@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Account(models.Model):
-    # account_set added implicitly
     name = models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -30,5 +29,7 @@ class TransactionItem(models.Model):
     price = models.FloatField()
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+
+
 
 
