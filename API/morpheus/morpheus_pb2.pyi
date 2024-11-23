@@ -25,12 +25,12 @@ class PredictProductNamesRequest(_message.Message):
     def __init__(self, token: _Optional[str] = ..., products: _Optional[_Iterable[str]] = ..., productGroups: _Optional[_Iterable[int]] = ...) -> None: ...
 
 class PredictedProductNames(_message.Message):
-    __slots__ = ("predictedName", "nameOnReceipt")
-    PREDICTEDNAME_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ("predictedNames", "nameOnReceipt")
+    PREDICTEDNAMES_FIELD_NUMBER: _ClassVar[int]
     NAMEONRECEIPT_FIELD_NUMBER: _ClassVar[int]
-    predictedName: _containers.RepeatedCompositeFieldContainer[PredictedName]
+    predictedNames: _containers.RepeatedCompositeFieldContainer[PredictedName]
     nameOnReceipt: str
-    def __init__(self, predictedName: _Optional[_Iterable[_Union[PredictedName, _Mapping]]] = ..., nameOnReceipt: _Optional[str] = ...) -> None: ...
+    def __init__(self, predictedNames: _Optional[_Iterable[_Union[PredictedName, _Mapping]]] = ..., nameOnReceipt: _Optional[str] = ...) -> None: ...
 
 class PredictProductNamesResponse(_message.Message):
     __slots__ = ("predictedProductNamesList",)

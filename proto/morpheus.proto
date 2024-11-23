@@ -18,7 +18,7 @@ message PredictProductNamesRequest {
 }
 
 message PredictedProductNames {
-    repeated PredictedName predictedName = 1;
+    repeated PredictedName predictedNames = 1;
     string nameOnReceipt = 2;
 }
 
