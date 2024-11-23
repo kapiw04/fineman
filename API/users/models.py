@@ -8,7 +8,7 @@ class Account(models.Model):
     name = models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     def __str__(self):
-        return self.name
+        return f"Account(name: '{self.name}', user_id:'{self.user_id}')"
 
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
