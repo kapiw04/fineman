@@ -33,6 +33,6 @@ class TransactionItem(models.Model):
     quantity = models.FloatField()
     price = models.FloatField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    transaction = models.ForeignKey(Transaction, null=True, on_delete=models.SET_NULL)
 
 
