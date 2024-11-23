@@ -7,8 +7,6 @@ class Account(models.Model):
     # account_set added implicitly
     name = models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    def __str__(self):
-        return f"Account(name: '{self.name}', user_id:'{self.user_id}')"
 
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
@@ -17,8 +15,6 @@ class Transaction(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=64)
     parent = models.ForeignKey('self', null=True, on_delete=models.SET_NULL)
-    def __str__(self):
-        return self.name
 
 class ProductGroup(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -32,7 +28,7 @@ class Product(models.Model):
 class TransactionItem(models.Model):
     quantity = models.FloatField()
     price = models.FloatField()
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    transaction = models.ForeignKey(Transaction, null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
 
 
