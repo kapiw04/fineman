@@ -13,8 +13,6 @@ class Account(models.Model):
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
-    def __str__(self):
-        return self.name
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
@@ -25,22 +23,16 @@ class Category(models.Model):
 class ProductGroup(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     account = models.ManyToManyField(Account)
-    def __str__(self):
-        return self.name
 
 class Product(models.Model):
     name = models.CharField(max_length=64)
     category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(ProductGroup, on_delete = models.CASCADE)
-    def __str__(self):
-        return self.name
 
 class TransactionItem(models.Model):
     quantity = models.FloatField()
     price = models.FloatField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
-    def __str__(self):
-        return self.name
 
 
