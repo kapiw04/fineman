@@ -25,7 +25,7 @@ def segment_receipt_fragment(receipt_img: Image) -> list[Image]:
     
     # count white pixels to find spaces between rows
     sum_x = np.count_nonzero(img_thr, axis=1)
-    thr_x = 0.05 * receipt_img.shape[1]
+    thr_x = 5
     dips = np.where(sum_x < thr_x)[0]
 
     mean_dip_height = np.mean([dips[i+1] - dips[i] for i in np.arange(dips.shape[0] - 1)])
@@ -45,3 +45,32 @@ def segment_receipt_fragment(receipt_img: Image) -> list[Image]:
         segments_list.append(segment)
 
     return segments_list
+
+def read_products_image(products_images: list[Image]) -> list[str]:
+    """
+    Read text from a list of product images
+    
+    Args:
+        product_images (list[Image]): A list of individual item's images
+    
+    Returns:
+        list[str]: A list of extracted text from the images
+    """
+    products_strings = []
+
+    for product in products_images:
+        # image preprocessing for better text extraction
+        gray = cv2.cvtColor(product, cv2.COLOR_BGR2GRAY)
+        kernel = np.ones((1,1), dtype=np.uint8)
+        dilated = cv2.dilate(gray, kernel, iterations=1)
+        eroded = cv2.erode(dilated, kernel, iterations=1)
+        thr = cv2.threshold(eroded, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+        
+        text = pytesseract.image_to_string(thr, lang = "pol", config = "--psm 6")
+
+        # clean up text
+        text = text.lstrip(" -()~%").rstrip("\n")
+
+        products_strings.append(text)
+
+    return products_strings
