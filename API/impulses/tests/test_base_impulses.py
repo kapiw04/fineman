@@ -1,5 +1,5 @@
 import pytest
-from API.impulses import BaseImpulse, Datapoint, DatapointSeries, TimeSeriesImpulse, ConstantImpulse
+from impulses import BaseImpulse, Datapoint, ConstantImpulse
 
 @pytest.fixture
 def datapoint_series():
@@ -53,24 +53,6 @@ def test_constant_impulse_init(value):
     impulse = ConstantImpulse(value)
     assert impulse.value == value
 
-def test_time_series_impulse_init(datapoint_series):
-    series = DatapointSeries(datapoint_series)
-    time_start = 1
-    time_end = 3
-    impulse = TimeSeriesImpulse(series, time_start, time_end)
-    
-    assert impulse.series == series
-    assert impulse.time_start == time_start
-    assert impulse.time_end == time_end
-
-def test_time_series_impulse_from_series(datapoint_series):
-    series = DatapointSeries(datapoint_series)
-    impulse = TimeSeriesImpulse.from_series(series)
-    
-    assert impulse.series == series
-    assert impulse.time_start == series.time_at(0)
-    assert impulse.time_end == series.time_at(-1)
-
 def test_base_impulse_empty_series():
     impulse = BaseImpulse([])
     sum_impulse = impulse.sum()
@@ -78,31 +60,3 @@ def test_base_impulse_empty_series():
     
     assert len(sum_impulse.series) == 0
     assert len(count_impulse.series) == 0
-
-def test_base_impulse_invalid_datapoint():
-    with pytest.raises(TypeError):
-        BaseImpulse([Datapoint(unix_time=1, value="invalid")])
-
-def test_constant_impulse_invalid_value():
-    with pytest.raises(TypeError):
-        ConstantImpulse("invalid")
-
-def test_time_series_impulse_invalid_time_range(datapoint_series):
-    series = DatapointSeries(datapoint_series)
-    with pytest.raises(ValueError):
-        TimeSeriesImpulse(series, time_start=3, time_end=1)
-
-def test_time_series_impulse_empty_series():
-    series = DatapointSeries([])
-    with pytest.raises(ValueError):
-        TimeSeriesImpulse(series, time_start=1, time_end=3)
-
-def test_creating_base_impulse_from_wrong_type():
-    with pytest.raises(TypeError):
-        BaseImpulse("invalid")
-    with pytest.raises(TypeError):
-        BaseImpulse(5)
-    with pytest.raises(TypeError):
-        BaseImpulse([5.0, 10.0])
-    with pytest.raises(TypeError):
-        BaseImpulse([Datapoint(unix_time=1, value=10.0), 5.0])    

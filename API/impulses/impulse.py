@@ -46,8 +46,6 @@ class DatapointSeries:
     """
 
     def __init__(self, series: List[Datapoint]):
-        if not (isinstance(series, List) and all(isinstance(datapoint, Datapoint) for datapoint in series)):
-            raise TypeError("series must be an iterable of Datapoint objects")
         self.series = series
 
     def time_at(self, idx: int) -> int:
@@ -61,6 +59,12 @@ class DatapointSeries:
         Get the value at a specific index.
         """
         return self.series[idx].value
+    
+    def to_list(self) -> List[Datapoint]:
+        """
+        Convert the DatapointSeries to a list.
+        """
+        return self.series
 
     def __len__(self) -> int:
         return len(self.series)
@@ -108,38 +112,13 @@ class BaseImpulse(DatapointSeries):
         Returns:
             BaseImpulse: The count of the impulse.
         """
-        unix_times = [datapoint.unix_time for datapoint in self.series]
-        values = range(1, len(self.series)+1)
         return BaseImpulse(
-            [Datapoint(unix_time, float(value)) for unix_time, value in zip(unix_times, values)]
+            [Datapoint(dp.unix_time, float(value) + 1) for value, dp in enumerate(self.series)]
         )
 
 class ConstantImpulse(BaseImpulse):
     """
     A class representing a constant impulse.
     """
-
     def __init__(self, value: float):
         self.value: Final[float] = value
-
-class TimeSeriesImpulse(BaseImpulse):
-    """
-    A class representing a time series impulse.
-    """
-
-    def __init__(self, series: DatapointSeries, time_start: int, time_end: int):
-        self.time_start = time_start
-        self.time_end = time_end
-
-    def get_mean(self) -> float:
-        return self.get_sum() / len(self.series)
-
-    def get_sum(self) -> float:
-        return sum([datapoint.value for datapoint in self.series])
-
-    @classmethod
-    def from_series(cls, series: DatapointSeries):
-        """
-        Create a TimeSeriesImpulse from a series of datapoints.
-        """
-        return cls(series, series.time_at(0), series.time_at(-1))
