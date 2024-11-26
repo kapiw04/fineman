@@ -27,7 +27,7 @@ jobs:
           run: pip install -r API/requirements.txt
 
         - name: code linting
-          run: ruff check
+          run: ruff check --config API/ruff.toml
 
         - name: type checking
           run: python3 -m mypy .
