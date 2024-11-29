@@ -2,6 +2,9 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from rest_framework import status
 from django.contrib.auth.models import User
+import base64
+import json
+
 # TODO: remove below lines
 # check if the algo used is in fact rsa512
 
@@ -14,18 +17,22 @@ class JwtTestCase(TestCase):
         self.user.save()
 
     def test_rsa(self):
-        """Check is RSA is enabled"""
-        from django.conf import settings
-        self.assertEqual(settings.SIMPLE_JWT["ALGORITHM"], "RS512")  
+        body = {"username": "filip", "password": "kochamsiostre123"}
+        response = client.post(reverse('token_obtain_pair'), data=body,  format='json')
+        fields = [base64.urlsafe_b64decode(x.encode() + b"==") for x in response.data['access'].split('.')]
+        #print("Header: ", fields[0].decode())
+        #print("Payload: ", fields[1].decode())
+        self.assertEqual(json.loads(fields[0]), {'alg':'RS512', 'typ':"JWT"})
 
-    def test_generate_jwt(self):
+
+    def test_generate_jwt_when_user_exists(self):
         body = {"username": "filip", "password": "kochamsiostre123"}
         response = client.post(reverse('token_obtain_pair'), data=body,  format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotEqual(response.data['access'], "")
         self.assertNotEqual(response.data['refresh'], "")
 
-    def test_generate_jwt_negative(self):
+    def test_generate_jwt_when_user_does_not_exist(self):
         body = {"username": "bezimienny", "password": "kochamsiostre123"}
         response = client.post(reverse('token_obtain_pair'), data=body,  format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -37,7 +44,7 @@ class JwtTestCase(TestCase):
         verified_view = client.get(reverse('test_jwt_auth'), headers=headers)
         self.assertEqual(verified_view.status_code, status.HTTP_200_OK)
 
-    def test_claims_authentication_negative(self):
+    def test_jwt_authentication_given_non_jwt_token(self):
         headers = {"Authorization": "Bearer " + "invalid token"}
         verified_view = client.get(reverse('test_jwt_auth'), headers=headers)
         self.assertEqual(verified_view.status_code, status.HTTP_401_UNAUTHORIZED)
