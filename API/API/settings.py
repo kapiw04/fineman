@@ -155,7 +155,7 @@ def getJwtKeys():
 
 
 
-(JWT_PRIVATE_KEY, JWT_PUBLIC_KEY) = getJwtKeys();
+(JWT_PRIVATE_KEY, JWT_PUBLIC_KEY) = getJwtKeys()
 SIMPLE_JWT = {
     "ALGORITHM" : "RS512", 
     "SIGNING_KEY" : JWT_PRIVATE_KEY, 
