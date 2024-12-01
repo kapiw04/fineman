@@ -5,10 +5,7 @@ on:
     paths:
       - 'morpheus/**'
     branches:
-      - '*'
-  pull_request:
-    branches:
-      - main
+      - '**'
 
 jobs:
   ci: 
