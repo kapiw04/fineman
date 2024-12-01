@@ -4,12 +4,9 @@ on:
   push:
     paths:
       - 'API/**'
-    branches:
-      - main
   pull_request:
     branches:
       - main
-      - develop
 
 jobs:
     linting: 
