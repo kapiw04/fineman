@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'morpheus/**'
+    branches:
+      - '*'
   pull_request:
     branches:
       - main
