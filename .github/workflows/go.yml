@@ -2,14 +2,8 @@ name: Go CI
 
 on:
   push:
-    paths:
-      - 'morpheus/**'
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
-      - develop
+      - '**'
 
 jobs:
   ci: 
