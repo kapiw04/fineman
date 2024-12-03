@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,6 +21,8 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Morpheus_PredictProductNames_FullMethodName = "/morpheus.Morpheus/PredictProductNames"
+	Morpheus_SendFeedback_FullMethodName        = "/morpheus.Morpheus/SendFeedback"
+	Morpheus_DeleteProductGroups_FullMethodName = "/morpheus.Morpheus/DeleteProductGroups"
 )
 
 // MorpheusClient is the client API for Morpheus service.
@@ -27,6 +30,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MorpheusClient interface {
 	PredictProductNames(ctx context.Context, in *PredictProductNamesRequest, opts ...grpc.CallOption) (*PredictProductNamesResponse, error)
+	SendFeedback(ctx context.Context, in *SendFeedbackRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteProductGroups(ctx context.Context, in *DeleteProductGroupsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type morpheusClient struct {
@@ -47,11 +52,33 @@ func (c *morpheusClient) PredictProductNames(ctx context.Context, in *PredictPro
 	return out, nil
 }
 
+func (c *morpheusClient) SendFeedback(ctx context.Context, in *SendFeedbackRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Morpheus_SendFeedback_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *morpheusClient) DeleteProductGroups(ctx context.Context, in *DeleteProductGroupsRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Morpheus_DeleteProductGroups_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MorpheusServer is the server API for Morpheus service.
 // All implementations must embed UnimplementedMorpheusServer
 // for forward compatibility.
 type MorpheusServer interface {
 	PredictProductNames(context.Context, *PredictProductNamesRequest) (*PredictProductNamesResponse, error)
+	SendFeedback(context.Context, *SendFeedbackRequest) (*emptypb.Empty, error)
+	DeleteProductGroups(context.Context, *DeleteProductGroupsRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedMorpheusServer()
 }
 
@@ -64,6 +91,12 @@ type UnimplementedMorpheusServer struct{}
 
 func (UnimplementedMorpheusServer) PredictProductNames(context.Context, *PredictProductNamesRequest) (*PredictProductNamesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PredictProductNames not implemented")
+}
+func (UnimplementedMorpheusServer) SendFeedback(context.Context, *SendFeedbackRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendFeedback not implemented")
+}
+func (UnimplementedMorpheusServer) DeleteProductGroups(context.Context, *DeleteProductGroupsRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteProductGroups not implemented")
 }
 func (UnimplementedMorpheusServer) mustEmbedUnimplementedMorpheusServer() {}
 func (UnimplementedMorpheusServer) testEmbeddedByValue()                  {}
@@ -104,6 +137,42 @@ func _Morpheus_PredictProductNames_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Morpheus_SendFeedback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendFeedbackRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MorpheusServer).SendFeedback(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Morpheus_SendFeedback_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MorpheusServer).SendFeedback(ctx, req.(*SendFeedbackRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Morpheus_DeleteProductGroups_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteProductGroupsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MorpheusServer).DeleteProductGroups(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Morpheus_DeleteProductGroups_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MorpheusServer).DeleteProductGroups(ctx, req.(*DeleteProductGroupsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Morpheus_ServiceDesc is the grpc.ServiceDesc for Morpheus service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +183,14 @@ var Morpheus_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PredictProductNames",
 			Handler:    _Morpheus_PredictProductNames_Handler,
+		},
+		{
+			MethodName: "SendFeedback",
+			Handler:    _Morpheus_SendFeedback_Handler,
+		},
+		{
+			MethodName: "DeleteProductGroups",
+			Handler:    _Morpheus_DeleteProductGroups_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

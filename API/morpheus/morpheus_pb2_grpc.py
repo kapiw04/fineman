@@ -3,6 +3,7 @@
 import grpc
 import warnings
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import morpheus_pb2 as morpheus__pb2
 
 GRPC_GENERATED_VERSION = '1.68.0'
@@ -39,12 +40,34 @@ class MorpheusStub(object):
                 request_serializer=morpheus__pb2.PredictProductNamesRequest.SerializeToString,
                 response_deserializer=morpheus__pb2.PredictProductNamesResponse.FromString,
                 _registered_method=True)
+        self.SendFeedback = channel.unary_unary(
+                '/morpheus.Morpheus/SendFeedback',
+                request_serializer=morpheus__pb2.SendFeedbackRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
+        self.DeleteProductGroups = channel.unary_unary(
+                '/morpheus.Morpheus/DeleteProductGroups',
+                request_serializer=morpheus__pb2.DeleteProductGroupsRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
 
 
 class MorpheusServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def PredictProductNames(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendFeedback(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteProductGroups(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -57,6 +80,16 @@ def add_MorpheusServicer_to_server(servicer, server):
                     servicer.PredictProductNames,
                     request_deserializer=morpheus__pb2.PredictProductNamesRequest.FromString,
                     response_serializer=morpheus__pb2.PredictProductNamesResponse.SerializeToString,
+            ),
+            'SendFeedback': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendFeedback,
+                    request_deserializer=morpheus__pb2.SendFeedbackRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'DeleteProductGroups': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteProductGroups,
+                    request_deserializer=morpheus__pb2.DeleteProductGroupsRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -86,6 +119,60 @@ class Morpheus(object):
             '/morpheus.Morpheus/PredictProductNames',
             morpheus__pb2.PredictProductNamesRequest.SerializeToString,
             morpheus__pb2.PredictProductNamesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SendFeedback(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/morpheus.Morpheus/SendFeedback',
+            morpheus__pb2.SendFeedbackRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteProductGroups(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/morpheus.Morpheus/DeleteProductGroups',
+            morpheus__pb2.DeleteProductGroupsRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,
