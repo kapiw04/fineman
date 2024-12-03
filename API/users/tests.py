@@ -17,8 +17,6 @@ class JwtTestCase(TestCase):
         body = {"username": "filip", "password": "kochamsiostre123"}
         response = client.post(reverse('token_obtain_pair'), data=body,  format='json')
         fields = [base64.urlsafe_b64decode(x.encode() + b"==") for x in response.data['access'].split('.')]
-        #print("Header: ", fields[0].decode())
-        #print("Payload: ", fields[1].decode())
         self.assertEqual(json.loads(fields[0]), {'alg':'RS512', 'typ':"JWT"})
 
 
