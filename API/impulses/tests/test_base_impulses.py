@@ -1,5 +1,5 @@
 import pytest
-from impulses import BaseImpulse, Datapoint, ConstantImpulse
+from API.impulses import BaseImpulse, Datapoint, ConstantImpulse
 
 @pytest.fixture
 def datapoint_series():
