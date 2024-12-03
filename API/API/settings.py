@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import rsa
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'users',
 ]
 
@@ -49,6 +52,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 
 ROOT_URLCONF = 'API.urls'
 
@@ -124,3 +133,31 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Check if the private key is supplied, if it isn't generate
+# a new key ad-hoc and print the public part to stdout
+# TODO: maybe not the best place for a function like this
+# make some kind of "utils" folder?
+def getJwtKeys():
+    private = os.getenv("JWT_PRIVATE_KEY")
+    public = os.getenv("JWT_PUBLIC_KEY")
+    if private is not None and public is not None:
+        return (private, public)
+    print("JWT_PRIVATE_KEY or JWT_PUBLIC_KEY not set (or both)")
+    print("Generating a new key pair...")
+    (public, private) = rsa.newkeys(2048)
+    public = public._save_pkcs1_pem().decode()
+    private = private._save_pkcs1_pem().decode()
+    print("Public key:\n", public)
+    return (private, public)
+    
+
+
+
+
+(JWT_PRIVATE_KEY, JWT_PUBLIC_KEY) = getJwtKeys()
+SIMPLE_JWT = {
+    "ALGORITHM" : "RS512", 
+    "SIGNING_KEY" : JWT_PRIVATE_KEY, 
+    "VERIFYING_KEY" : JWT_PUBLIC_KEY, 
+}
