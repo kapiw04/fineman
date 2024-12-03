@@ -5,9 +5,6 @@ from django.contrib.auth.models import User
 import base64
 import json
 
-# TODO: remove below lines
-# check if the algo used is in fact rsa512
-
 # Create your tests here.
 client = Client()
 
